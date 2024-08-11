@@ -1,9 +1,9 @@
 <script setup>
-import ToDosView from "./components/ToDosView.vue";
+import BoardsView from "./components/BoardsView.vue";
 </script>
 
 <template>
-  <ToDosView />
+  <BoardsView />
 </template>
 
 <style scoped></style>

@@ -1,7 +1,7 @@
 <script setup>
 import { reactive, ref } from "vue";
-import NewInput from "./NewInput.vue";
 import ModalComponent from "./ModalComponent.vue";
+import ItemComponent from "./ItemComponent.vue";
 
 const boards = reactive([
   { id: crypto.randomUUID(), name: "Board 1", items: [] },
@@ -13,14 +13,6 @@ const errorMessage = ref("");
 const modalMode = ref("");
 const currentBoard = ref(null);
 const currentItem = ref(null);
-
-const handleNewItem = (text, board) => {
-  if (text.trim()) {
-    board.items.push({ id: crypto.randomUUID(), title: text.trim() });
-  } else {
-    errorMessage.value = "Item title cannot be empty";
-  }
-};
 
 const handleNewBoard = () => {
   modalMode.value = "create-board";
@@ -55,12 +47,6 @@ const updateBoardName = (newName) => {
   closeModal();
 };
 
-const editItem = (item) => {
-  currentItem.value = item;
-  modalMode.value = "edit-item";
-  openModal.value = true;
-};
-
 const updateItemName = (newTitle) => {
   if (!newTitle.trim()) {
     errorMessage.value = "Item title cannot be empty";
@@ -82,15 +68,6 @@ const handleDeleteBoard = (boardId) => {
   if (index !== -1) {
     boards.splice(index, 1);
   }
-};
-
-const handleDeleteItem = (board, itemId) => {
-  board.items = board.items.filter((item) => item.id !== itemId);
-};
-
-const startDrag = (evt, boardId, itemId) => {
-  evt.dataTransfer.effectAllowed = "move";
-  evt.dataTransfer.setData("item", JSON.stringify({ boardId, itemId }));
 };
 
 const onDrop = (evt, dest) => {
@@ -145,27 +122,10 @@ const onDrop = (evt, dest) => {
           </button>
         </div>
       </header>
-      <div class="items-container">
-        <NewInput @on-new-item="(text) => handleNewItem(text, board)" />
-        <div v-if="board.items.length === 0" class="empty-list">
-          No items yet. Add a new task.
-        </div>
-        <div
-          class="item"
-          v-for="item in board.items"
-          :key="item.id"
-          draggable="true"
-          @dragstart="startDrag($event, board.id, item.id)"
-        >
-          <input type="text" :value="item.title" readonly />
-          <div class="item-actions">
-            <button @click="editItem(item)">Edit</button>
-            <button class="delete" @click="handleDeleteItem(board, item.id)">
-              Delete
-            </button>
-          </div>
-        </div>
-      </div>
+      <ItemComponent :board="board" />
+    </div>
+    <div v-if="boards.length === 0" class="empty-list">
+      No boards yet, add a new board.
     </div>
   </div>
 </template>
@@ -195,20 +155,21 @@ nav a:hover {
   text-decoration: underline;
 }
 
-/* Contenedor de tableros */
 .boards-container {
   display: flex;
   flex-wrap: wrap;
-  padding: 20px;
-  gap: 20px;
+  justify-content: center;
 }
 
 .board {
+  width: 18rem;
+  display: flex;
+  flex-direction: column;
   background-color: #ffffff;
   padding: 15px;
   border-radius: 8px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  width: 300px;
+  margin: 1rem;
 }
 
 .board-header {
@@ -220,7 +181,15 @@ nav a:hover {
 
 .board-header h3 {
   margin: 0;
-  font-size: 1.2em;
+  font-size: 1.3em;
+  width: 8rem;
+  overflow: hidden;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.board-header h3:hover {
+  overflow: auto;
 }
 
 .board-actions button {
@@ -239,41 +208,6 @@ nav a:hover {
 
 .board-actions button:hover {
   opacity: 0.8;
-}
-
-/* Estilos de ítems */
-.item {
-  padding: 10px;
-  border-radius: 4px;
-  margin: 10px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.item input[type="text"] {
-  border: none;
-  background: none;
-  font-size: 1em;
-  width: 11rem;
-  cursor: default; 
-}
-
-.item-actions button {
-  border: none;
-  border-radius: 4px;
-  color: #3498db;
-  cursor: pointer;
-  margin-left: 5px;
-}
-
-.item-actions button.delete {
-  color: #e74c3c;
-}
-
-.item:hover {
-  background-color: #e0e0e0;
 }
 
 .empty-list {

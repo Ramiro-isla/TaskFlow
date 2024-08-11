@@ -31,14 +31,13 @@ const addItem = () => {
 .new-input {
   display: flex;
   align-items: center;
-  gap: 10px;
   margin-top: 10px;
 }
 
 .new-input input[type="text"] {
-  flex-grow: 1;
   padding: 10px;
   border-radius: 4px;
+  width: 11rem;
   border: 1px solid #ccc;
 }
 

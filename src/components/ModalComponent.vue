@@ -47,8 +47,8 @@ const handleSubmit = () => {
       <div v-if="localErrorMessage || errorMessage" class="error">
         {{ localErrorMessage || errorMessage }}
       </div>
-      <button class="save-button" @click="handleSubmit">Save</button>
       <button class="cancel-button" @click="onCancel">Cancel</button>
+      <button class="save-button" @click="handleSubmit">Save</button>
     </div>
   </div>
 </template>
