@@ -117,4 +117,9 @@ const handleSubmit = () => {
 .modal button:hover {
   opacity: 0.8;
 }
+@media (max-width: 425px) {
+  .modal {
+    width: 60%;
+  }
+}
 </style>
